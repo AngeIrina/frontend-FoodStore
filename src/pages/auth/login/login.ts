@@ -1,37 +1,28 @@
 import "../../../styles/login.css";
-import type { IUser } from "../../../types/IUser";
+import { getUsuarios } from "../../../utils/api";
 import { saveUser } from "../../../utils/localStorage";
 import { navigateTo, ROUTES } from "../../../utils/navigate";
-import { seedAdmin } from "../../../utils/seedAdmin";
-
-seedAdmin();
 
 const form = document.getElementById("loginForm") as HTMLFormElement;
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = (document.getElementById("email") as HTMLInputElement).value;
+  const email = (document.getElementById("email") as HTMLInputElement).value.trim();
   const password = (document.getElementById("password") as HTMLInputElement).value;
-  const rolSeleccionado = (document.getElementById("rol") as HTMLSelectElement).value;
 
-  const users: IUser[] = JSON.parse(localStorage.getItem("users") || "[]");
+  const usuarios = await getUsuarios();
+  const usuario = usuarios.find((u) => u.mail === email && u.password === password);
 
-  const user = users.find(u => u.email === email && u.password === password);
-
-  if (!user) {
-    alert("Usuario o contraseña incorrectos");
+  if (!usuario) {
+    alert("Email o contraseña incorrectos");
     return;
   }
 
-  if (user.rol !== rolSeleccionado) {
-    alert("Rol incorrecto para este usuario");
-    return;
-  }
+  const { password: _password, ...usuarioSinPassword } = usuario;
+  saveUser(usuarioSinPassword);
 
-  saveUser(user);
-
-  if (user.rol === "admin") {
+  if (usuario.rol === "ADMIN") {
     navigateTo(ROUTES.ADMIN);
   } else {
     navigateTo(ROUTES.CLIENT);

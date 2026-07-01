@@ -1,7 +1,13 @@
 import type { Rol } from "./Rol";
 
 export interface IUser {
-  email: string;
-  password: string;
+  id: number;
+  nombre: string;
+  apellido: string;
+  mail: string;
+  celular: string;
   rol: Rol;
+  password: string;
 }
+
+export type UsuarioSesion = Omit<IUser, "password">;

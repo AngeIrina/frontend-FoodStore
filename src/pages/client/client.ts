@@ -1,74 +1,109 @@
 import "../../styles/client.css";
 import { requireClient, logout } from "../../utils/auth";
-import { productos, categorias } from "../../data/products";
+import { getCategorias, getProductos } from "../../utils/api";
+import type { Producto } from "../../types/Producto";
+import type { Categoria } from "../../types/Categoria";
 
 requireClient();
 
 const logoutBtn = document.getElementById("logoutBtn");
 const listaCategorias = document.getElementById("lista-categorias");
 const contenedorProductos = document.getElementById("contenedor-productos");
+const inputBuscar = document.getElementById("buscar") as HTMLInputElement;
+const formBusqueda = document.getElementById("form-busqueda") as HTMLFormElement;
+const selectOrden = document.getElementById("orden") as HTMLSelectElement | null;
 
-const renderProductos = (listaAMostrar: typeof productos) => {
+let productos: Producto[] = [];
+let categoriaSeleccionada: string | null = null;
+
+const renderProductos = (lista: Producto[]) => {
   if (!contenedorProductos) return;
 
-  if (listaAMostrar.length === 0) {
+  if (lista.length === 0) {
     contenedorProductos.innerHTML = `<p>No se encontraron productos.</p>`;
     return;
   }
 
-  contenedorProductos.innerHTML = listaAMostrar.map(p => `
-    <article class="producto">
+  contenedorProductos.innerHTML = lista.map((p) => `
+    <article class="producto" data-id="${p.id}">
       <img src="${p.imagen}" alt="${p.nombre}">
       <h3>${p.nombre}</h3>
       <p>${p.descripcion}</p>
       <p class="precio">$${p.precio}</p>
-      <button class="btn-agregar" data-nombre="${p.nombre}">
-        Agregar
-      </button>
+      <span class="badge ${p.disponible ? "disponible" : "no-disponible"}">
+        ${p.disponible ? "Disponible" : "No disponible"}
+      </span>
     </article>
   `).join("");
 };
 
-// Render de categorías
-if (listaCategorias) {
-  listaCategorias.innerHTML = categorias.map(cat => `
-    <li>
-      <a href="#" data-categoria="${cat}">${cat}</a>
-    </li>
-  `).join("");
+const aplicarFiltros = () => {
+  let resultado = productos.filter((p) => p.disponible && !p.eliminado);
 
-  // Filtro 
-  listaCategorias.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    const link = (e.target as HTMLElement).closest("a");
-    if (!link) return;
-
-    const seleccionada = link.dataset.categoria;
-
-    // marcar activa
-    document.querySelectorAll("#lista-categorias a").forEach(a => {
-      a.classList.remove("active");
-    });
-    link.classList.add("active");
-
-    // filtrar
-    const filtrados = productos.filter(
-      p => p.categoria.toLowerCase() === seleccionada?.toLowerCase()
+  if (categoriaSeleccionada) {
+    resultado = resultado.filter(
+      (p) => p.categoria.nombre.toLowerCase() === categoriaSeleccionada?.toLowerCase()
     );
-    renderProductos(filtrados);
-  });
-}
+  }
+
+  const texto = inputBuscar?.value.trim().toLowerCase() ?? "";
+  if (texto) {
+    resultado = resultado.filter((p) => p.nombre.toLowerCase().includes(texto));
+  }
+
+  const orden = selectOrden?.value ?? "";
+  if (orden === "nombre-asc") {
+    resultado = [...resultado].sort((a, b) => a.nombre.localeCompare(b.nombre));
+  } else if (orden === "nombre-desc") {
+    resultado = [...resultado].sort((a, b) => b.nombre.localeCompare(a.nombre));
+  } else if (orden === "precio-asc") {
+    resultado = [...resultado].sort((a, b) => a.precio - b.precio);
+  } else if (orden === "precio-desc") {
+    resultado = [...resultado].sort((a, b) => b.precio - a.precio);
+  }
+
+  renderProductos(resultado);
+};
+
+const init = async () => {
+  const [categorias, productosFetch] = await Promise.all([getCategorias(), getProductos()]);
+  productos = productosFetch;
+
+  if (listaCategorias) {
+    listaCategorias.innerHTML = categorias.map((c: Categoria) => `
+      <li><a href="#" data-categoria="${c.nombre}">${c.nombre}</a></li>
+    `).join("");
+
+    listaCategorias.addEventListener("click", (e) => {
+      e.preventDefault();
+      const link = (e.target as HTMLElement).closest("a") as HTMLElement | null;
+      if (!link) return;
+
+      document.querySelectorAll("#lista-categorias a").forEach((a) => a.classList.remove("active"));
+
+      const cat = link.dataset.categoria ?? null;
+      if (categoriaSeleccionada === cat) {
+        categoriaSeleccionada = null;
+      } else {
+        categoriaSeleccionada = cat;
+        link.classList.add("active");
+      }
+      aplicarFiltros();
+    });
+  }
+
+  aplicarFiltros();
+};
+
+init();
 
 contenedorProductos?.addEventListener("click", (e) => {
-  const target = e.target as HTMLElement;
-
-  if (target.classList.contains("btn-agregar")) {
-    const nombre = target.dataset.nombre;
-    console.log(`Producto seleccionado: ${nombre}`);
-  }
+  const card = (e.target as HTMLElement).closest(".producto") as HTMLElement | null;
+  if (!card) return;
+  window.location.href = `../productDetail/productDetail.html?id=${card.dataset.id}`;
 });
 
+inputBuscar?.addEventListener("input", aplicarFiltros);
+formBusqueda?.addEventListener("submit", (e) => e.preventDefault());
+selectOrden?.addEventListener("change", aplicarFiltros);
 logoutBtn?.addEventListener("click", logout);
-
-renderProductos(productos);

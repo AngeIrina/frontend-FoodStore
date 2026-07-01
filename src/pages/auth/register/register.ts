@@ -1,35 +1,41 @@
 import "../../../styles/register.css";
-import type { IUser } from "../../../types/IUser";
+import { getUsuarios } from "../../../utils/api";
+import { saveUser } from "../../../utils/localStorage";
+import { navigateTo, ROUTES } from "../../../utils/navigate";
 
 const form = document.querySelector("#registerForm") as HTMLFormElement;
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = (document.getElementById("email") as HTMLInputElement).value;
+  const nombre = (document.getElementById("nombre") as HTMLInputElement).value.trim();
+  const email = (document.getElementById("email") as HTMLInputElement).value.trim();
   const password = (document.getElementById("password") as HTMLInputElement).value;
 
-  const users: IUser[] = JSON.parse(localStorage.getItem("users") || "[]");
-
-  const existe = users.find(u => u.email === email);
-
-  if (existe) {
-    alert("El usuario ya existe");
+  if (password.length < 6) {
+    alert("La contraseña debe tener al menos 6 caracteres");
     return;
   }
 
-  // crear usuario (siempre client)
-  const newUser: IUser = {
-    email,
-    password,
-    rol: "client"
+  const usuarios = await getUsuarios();
+  const existe = usuarios.some((u) => u.mail === email);
+
+  if (existe) {
+    alert("Ya existe un usuario registrado con ese mail");
+    return;
+  }
+
+  const nuevoId = Math.max(0, ...usuarios.map((u) => u.id)) + 1;
+  const nuevoUsuario = {
+    id: nuevoId,
+    nombre,
+    apellido: "",
+    mail: email,
+    celular: "",
+    rol: "USUARIO" as const,
   };
 
-  users.push(newUser);
-
-  localStorage.setItem("users", JSON.stringify(users));
-
+  saveUser(nuevoUsuario);
   alert("Usuario registrado correctamente");
-
-  form.reset();
+  navigateTo(ROUTES.CLIENT);
 });

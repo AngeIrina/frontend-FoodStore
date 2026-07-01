@@ -206,3 +206,30 @@ footer {
   font-size: 13px;
   color: #888;
 }
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.badge.disponible {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.badge.no-disponible {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+button,
+select,
+#lista-categorias li a,
+.producto,
+.volver {
+  cursor: pointer;
+}

@@ -5,7 +5,7 @@ export const requireClient = (): void => {
   const user = getUser();
   if (!user) {
     navigateTo(ROUTES.LOGIN);
-  } else if (user.rol !== "client") {
+  } else if (user.rol !== "USUARIO") {
     navigateTo(ROUTES.ADMIN);
   }
 };
@@ -14,7 +14,7 @@ export const requireAdmin = (): void => {
   const user = getUser();
   if (!user) {
     navigateTo(ROUTES.LOGIN);
-  } else if (user.rol !== "admin") {
+  } else if (user.rol !== "ADMIN") {
     navigateTo(ROUTES.CLIENT);
   }
 };
