@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Store</title>
+    <link rel="stylesheet" href="/src/styles/client.css" />
+    <script type="module" src="./client.ts"></script>
+  </head>
+  <body>
+    <header class="encabezado">
+      <div class="logo">
+        <img src="/assets/logo.jpg" alt="Food Store Logo" />
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#">Inicio</a></li>
+          <li><a href="#">Mis Pedidos</a></li>
+          <li><a href="#">Carrito</a></li>
+        </ul>
+      </nav>
+      <button id="logoutBtn" class="btn-logout">Cerrar sesión</button>
+    </header>
+
+    <main>
+      <form id="form-busqueda">
+        <input type="text" id="buscar" placeholder="Buscar comida..." />
+        <button type="submit">Buscar</button>
+      </form>
+
+      <aside>
+        <ul id="lista-categorias"></ul>
+      </aside>
+
+      <section>
+        <div id="contenedor-productos"></div>
+      </section>
+    </main>
+
+    <footer>
+      <hr />
+      <p>&copy; 2025 Food Store. Todos los derechos reservados.</p>
+    </footer>
+  </body>
+</html>
