@@ -5,8 +5,6 @@ export const requireClient = (): void => {
   const user = getUser();
   if (!user) {
     navigateTo(ROUTES.LOGIN);
-  } else if (user.rol !== "USUARIO") {
-    navigateTo(ROUTES.ADMIN);
   }
 };
 

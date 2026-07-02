@@ -189,6 +189,9 @@ nav a:hover {
   padding: 10px;
   border-radius: 5px;
   font-weight: bold;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
   cursor: pointer;
   text-transform: uppercase;
   transition: background 0.3s;

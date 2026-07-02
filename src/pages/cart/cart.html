@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Detalle del producto - Food Store</title>
+    <title>Carrito - Food Store</title>
     <link rel="stylesheet" href="/src/styles/client.css" />
-    <link rel="stylesheet" href="/src/styles/productDetail.css" />
-    <script type="module" src="./productDetail.ts"></script>
+    <link rel="stylesheet" href="/src/styles/cart.css" />
+    <script type="module" src="./cart.ts"></script>
   </head>
   <body>
     <header class="encabezado">
@@ -16,8 +16,9 @@
       <button id="logoutBtn" class="btn-logout">Cerrar sesión</button>
     </header>
 
-    <main id="detalle-container">
-      <p>Cargando producto...</p>
+    <main>
+      <h1>Mi Carrito</h1>
+      <div id="carrito-container"></div>
     </main>
 
     <footer>

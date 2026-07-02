@@ -1,3 +1,5 @@
+import { getUser } from "./localStorage";
+
 export interface ItemCarrito {
   productoId: number;
   nombre: string;
@@ -6,15 +8,18 @@ export interface ItemCarrito {
   cantidad: number;
 }
 
-const CART_KEY = "carrito";
+const claveCarrito = (): string => {
+  const usuario = getUser();
+  return usuario ? `carrito_${usuario.mail}` : "carrito_invitado";
+};
 
 export const getCarrito = (): ItemCarrito[] => {
-  const data = localStorage.getItem(CART_KEY);
+  const data = localStorage.getItem(claveCarrito());
   return data ? JSON.parse(data) : [];
 };
 
 export const saveCarrito = (items: ItemCarrito[]): void => {
-  localStorage.setItem(CART_KEY, JSON.stringify(items));
+  localStorage.setItem(claveCarrito(), JSON.stringify(items));
 };
 
 export const addToCarrito = (item: ItemCarrito): void => {
@@ -29,5 +34,6 @@ export const addToCarrito = (item: ItemCarrito): void => {
 };
 
 export const clearCarrito = (): void => {
-  localStorage.removeItem(CART_KEY);
+  localStorage.removeItem(claveCarrito());
 };
+

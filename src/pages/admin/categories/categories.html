@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Categorías - Panel de Administración</title>
+    <link rel="stylesheet" href="/src/styles/admin.css" />
+    <script type="module" src="./categories.ts"></script>
+  </head>
+  <body>
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-logo">
+          <img src="/assets/logo.svg" alt="Food Store Logo" />
+        </div>
+        <nav>
+          <ul>
+            <li><a href="../home/home.html">Dashboard</a></li>
+            <li><a href="./categories.html" class="active">Categorías</a></li>
+            <li><a href="../products/products.html">Productos</a></li>
+            <li><a href="../orders/orders.html">Pedidos</a></li>
+            <li><a href="../../client/client.html">Ver Tienda</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="admin-content">
+        <header class="admin-header">
+          <h1>Gestión de Categorías</h1>
+          <div>
+            <span id="userEmail"></span>
+            <button id="logoutBtn" class="btn-logout">Cerrar sesión</button>
+          </div>
+        </header>
+
+        <button id="btnNueva" class="btn-nuevo">+ Nueva categoría</button>
+
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-categorias"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="modal-overlay" class="modal-overlay" style="display:none;">
+      <div class="modal">
+        <button id="cerrarModal" class="modal-cerrar">&times;</button>
+        <h2 id="modalTitulo">Nueva categoría</h2>
+        <form id="formCategoria">
+          <div class="input-box">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" required />
+          </div>
+          <div class="input-box">
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn-nuevo">Guardar</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

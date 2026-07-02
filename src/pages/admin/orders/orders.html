@@ -3,9 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel de Administración - Food Store</title>
+    <title>Pedidos - Panel de Administración</title>
     <link rel="stylesheet" href="/src/styles/admin.css" />
-    <script type="module" src="./home.ts"></script>
+    <link rel="stylesheet" href="/src/styles/orders.css" />
+    <script type="module" src="./orders.ts"></script>
   </head>
   <body>
     <div class="admin-layout">
@@ -15,10 +16,10 @@
         </div>
         <nav>
           <ul>
-            <li><a href="./home.html" class="active">Dashboard</a></li>
+            <li><a href="../home/home.html">Dashboard</a></li>
             <li><a href="../categories/categories.html">Categorías</a></li>
             <li><a href="../products/products.html">Productos</a></li>
-            <li><a href="../orders/orders.html">Pedidos</a></li>
+            <li><a href="./orders.html" class="active">Pedidos</a></li>
             <li><a href="../../client/client.html">Ver Tienda</a></li>
           </ul>
         </nav>
@@ -26,20 +27,29 @@
 
       <div class="admin-content">
         <header class="admin-header">
-          <h1>Dashboard</h1>
+          <h1>Gestión de Pedidos</h1>
           <div>
             <span id="userEmail"></span>
             <button id="logoutBtn" class="btn-logout">Cerrar sesión</button>
           </div>
         </header>
 
-        <p class="admin-intro">Resumen general del sistema.</p>
+        <select id="filtroEstado" class="filtro-estado">
+          <option value="">Todos los estados</option>
+          <option value="PENDIENTE">Pendiente</option>
+          <option value="EN_PREPARACION">En preparación</option>
+          <option value="ENTREGADO">Entregado</option>
+          <option value="CANCELADO">Cancelado</option>
+        </select>
 
-        <section class="admin-stats" id="stats-container">
-          <p>Cargando estadísticas...</p>
-        </section>
+        <div id="pedidos-container"></div>
+      </div>
+    </div>
 
-        <section class="panel-pedidos-estado" id="pedidos-estado-container"></section>
+    <div id="modal-overlay" class="modal-overlay" style="display:none;">
+      <div class="modal">
+        <button id="cerrarModal" class="modal-cerrar">&times;</button>
+        <div id="modal-contenido"></div>
       </div>
     </div>
   </body>

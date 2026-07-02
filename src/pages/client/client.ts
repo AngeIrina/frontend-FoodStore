@@ -3,15 +3,26 @@ import { requireClient, logout } from "../../utils/auth";
 import { getCategorias, getProductos } from "../../utils/api";
 import type { Producto } from "../../types/Producto";
 import type { Categoria } from "../../types/Categoria";
+import { getUser } from "../../utils/localStorage";
 
 requireClient();
+
+const usuarioActual = getUser();
+const linkPanelAdmin = document.getElementById("linkPanelAdmin");
+if (linkPanelAdmin && usuarioActual?.rol === "ADMIN") {
+  linkPanelAdmin.style.display = "inline";
+}
 
 const logoutBtn = document.getElementById("logoutBtn");
 const listaCategorias = document.getElementById("lista-categorias");
 const contenedorProductos = document.getElementById("contenedor-productos");
 const inputBuscar = document.getElementById("buscar") as HTMLInputElement;
-const formBusqueda = document.getElementById("form-busqueda") as HTMLFormElement;
-const selectOrden = document.getElementById("orden") as HTMLSelectElement | null;
+const formBusqueda = document.getElementById(
+  "form-busqueda",
+) as HTMLFormElement;
+const selectOrden = document.getElementById(
+  "orden",
+) as HTMLSelectElement | null;
 
 let productos: Producto[] = [];
 let categoriaSeleccionada: string | null = null;
@@ -24,7 +35,9 @@ const renderProductos = (lista: Producto[]) => {
     return;
   }
 
-  contenedorProductos.innerHTML = lista.map((p) => `
+  contenedorProductos.innerHTML = lista
+    .map(
+      (p) => `
     <article class="producto" data-id="${p.id}">
       <img src="${p.imagen}" alt="${p.nombre}">
       <h3>${p.nombre}</h3>
@@ -34,7 +47,9 @@ const renderProductos = (lista: Producto[]) => {
         ${p.disponible ? "Disponible" : "No disponible"}
       </span>
     </article>
-  `).join("");
+  `,
+    )
+    .join("");
 };
 
 const aplicarFiltros = () => {
@@ -42,7 +57,9 @@ const aplicarFiltros = () => {
 
   if (categoriaSeleccionada) {
     resultado = resultado.filter(
-      (p) => p.categoria.nombre.toLowerCase() === categoriaSeleccionada?.toLowerCase()
+      (p) =>
+        p.categoria.nombre.toLowerCase() ===
+        categoriaSeleccionada?.toLowerCase(),
     );
   }
 
@@ -66,20 +83,29 @@ const aplicarFiltros = () => {
 };
 
 const init = async () => {
-  const [categorias, productosFetch] = await Promise.all([getCategorias(), getProductos()]);
+  const [categorias, productosFetch] = await Promise.all([
+    getCategorias(),
+    getProductos(),
+  ]);
   productos = productosFetch;
 
   if (listaCategorias) {
-    listaCategorias.innerHTML = categorias.map((c: Categoria) => `
+    listaCategorias.innerHTML = categorias
+      .map(
+        (c: Categoria) => `
       <li><a href="#" data-categoria="${c.nombre}">${c.nombre}</a></li>
-    `).join("");
+    `,
+      )
+      .join("");
 
     listaCategorias.addEventListener("click", (e) => {
       e.preventDefault();
       const link = (e.target as HTMLElement).closest("a") as HTMLElement | null;
       if (!link) return;
 
-      document.querySelectorAll("#lista-categorias a").forEach((a) => a.classList.remove("active"));
+      document
+        .querySelectorAll("#lista-categorias a")
+        .forEach((a) => a.classList.remove("active"));
 
       const cat = link.dataset.categoria ?? null;
       if (categoriaSeleccionada === cat) {
@@ -88,6 +114,7 @@ const init = async () => {
         categoriaSeleccionada = cat;
         link.classList.add("active");
       }
+      if (inputBuscar) inputBuscar.value = ""; // limpia la búsqueda al cambiar de categoría
       aplicarFiltros();
     });
   }
@@ -98,7 +125,9 @@ const init = async () => {
 init();
 
 contenedorProductos?.addEventListener("click", (e) => {
-  const card = (e.target as HTMLElement).closest(".producto") as HTMLElement | null;
+  const card = (e.target as HTMLElement).closest(
+    ".producto",
+  ) as HTMLElement | null;
   if (!card) return;
   window.location.href = `../productDetail/productDetail.html?id=${card.dataset.id}`;
 });

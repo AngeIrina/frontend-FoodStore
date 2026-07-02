@@ -17,7 +17,7 @@ const render = (producto: Producto | undefined) => {
   if (!producto) {
     container.innerHTML = `
       <p>No se encontró el producto.</p>
-      <a href="../client/client.html">Volver al catálogo</a>
+      <a href="../client/client.html" class="btn-agregar volver">Volver al catálogo</a>
     `;
     return;
   }
@@ -50,7 +50,7 @@ const render = (producto: Producto | undefined) => {
           </p>
         `}
 
-        <a href="../client/client.html" class="volver">&larr; Volver al catálogo</a>
+        <a href="../client/client.html" class="btn-agregar volver">Volver al catálogo</a>
       </div>
     </div>
   `;
